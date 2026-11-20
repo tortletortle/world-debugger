@@ -41,3 +41,7 @@ node research/v45/world-debug-v45-benchmark.cjs
 ## V0.50 二维世界实验室
 
 [交互演示](demo/v50/index.html)（下载 HTML 后离线打开）。三个圆盘、接触处理、共享环境力辨识和多次规律变化。完整实验见 [V0.50 协议与结果](demo/v50/README.md)。保留 V0.49 与历史版本。
+
+## V0.51 主动科学实验规划（研究模块）
+
+[算法、480 次留出实验及复现说明](research/v51/README.md)：信息增益规划与采样期间规律变化检测、分段重启。浏览器继续使用 V0.50。
