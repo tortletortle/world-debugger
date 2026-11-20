@@ -1,0 +1,66 @@
+'use strict';
+function World51(){
+'use strict';
+const dt=.05,T=72,N=3,R=.18,modes=['healthy','mixed','sequential','unknown'],policies=['frozen','fixed240','fixed','random','info','info_safe'];
+const norm=(x,y)=>Math.hypot(x,y),rms=a=>Math.sqrt(a.reduce((s,x)=>s+x*x,0)/Math.max(1,a.length)),mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+function rng(seed){let s=seed>>>0;return()=>((s=(Math.imul(s,1664525)+1013904223)>>>0)+.5)/4294967296;}
+const keys=['gx','gy','damp','drag','radial','swirl'],basis=(b)=>[[1,0],[0,1],[-b.vx,-b.vy],[-norm(b.vx,b.vy)*b.vx,-norm(b.vx,b.vy)*b.vy],[-b.x,-b.y],[-b.y,b.x]];
+const nominal={terms:[2],beta:[.35]};
+function force(m,b){const f=basis(b);return m.terms.reduce((a,k,i)=>[a[0]+f[k][0]*m.beta[i],a[1]+f[k][1]*m.beta[i]],[0,0]);}
+function goal(t,i){const p=.57*t+i*2*Math.PI/3,a=1.55,sg=i===1?-1:1;return {x:a*Math.cos(p),y:sg*a*Math.sin(p),vx:-a*.57*Math.sin(p),vy:sg*a*.57*Math.cos(p),ax:-a*.57*.57*Math.cos(p),ay:-sg*a*.57*.57*Math.sin(p)};}
+function makeLaw(mode,seed){let r=rng(seed^0x50a),s=r()<.5?-1:1,k=.8+.4*r();return (t,b,first,second)=>{if(mode==='healthy'||t<first)return force(nominal,b);
+let m={terms:[0,1,2,3,4,5],beta:[s*.9*k,-.65*k,.35,.65*k,0,0]};
+if(mode==='sequential'&&t>=second)m={terms:[0,1,2,3,4,5],beta:[-.6*s*k,.8*k,.35,.2*k,.48*k,.72*s*k]};
+const f=force(m,b);if(mode==='unknown'){f[0]+=1.65*Math.sin(8*b.x+3*b.vy);f[1]+=1.65*Math.cos(7*b.y+4*b.vx);}return f;};}
+function solve(A){let n=A.length;for(let i=0;i<n;i++){let k=i;for(let j=i+1;j<n;j++)if(Math.abs(A[j][i])>Math.abs(A[k][i]))k=j;[A[i],A[k]]=[A[k],A[i]];let d=A[i][i];if(Math.abs(d)<1e-10)return null;for(let j=i;j<=n;j++)A[i][j]/=d;for(let k=0;k<n;k++)if(k!==i){let z=A[k][i];for(let j=i;j<=n;j++)A[k][j]-=z*A[i][j];}}return A.map(a=>a[n]);}
+function fit(rows,terms){const n=terms.length,A=Array.from({length:n},()=>Array(n+1).fill(0));for(const row of rows){const f=basis(row);for(let i=0;i<n;i++){let a=f[terms[i]];A[i][n]+=a[0]*row.fx+a[1]*row.fy;for(let j=0;j<n;j++){let b=f[terms[j]];A[i][j]+=a[0]*b[0]+a[1]*b[1];}}}for(let i=0;i<n;i++)A[i][i]+=.003;let beta=solve(A);return beta?{terms,beta}:null;}
+function error(m,rows){return rms(rows.map(b=>{const [x,y]=force(m,b);return norm(x-b.fx,y-b.fy);}));}
+function search(train,val){let best=null;for(let mask=0;mask<8;mask++){const terms=[0,1,2,...[3,4,5].filter((_,i)=>mask&(1<<i))],m=fit(train,terms);if(!m)continue;const validation=error(m,val),score=validation+.012*(terms.length-3);if(!best||score<best.score)best={...m,validation,score};}if(!best)throw Error('fit failed');return best;}
+function collide(a,b){let dx=b.x-a.x,dy=b.y-a.y,d=norm(dx,dy);if(d>=2*R)return false;let nx=d>1e-9?dx/d:1,ny=d>1e-9?dy/d:0,over=(2*R-d)/2+1e-6;a.x-=over*nx;a.y-=over*ny;b.x+=over*nx;b.y+=over*ny;let q=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(q<0){let impulse=-.85*q;a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny;}return true;}
+// Prospective information planning using only measured states and the current fitted model.
+const scales=[1,1,1,2,2,2], P=6;
+function vectors(b){const f=basis(b);return [0,1].map(axis=>f.map((v,k)=>v[axis]/scales[k]));}
+function gram(rows){const A=Array.from({length:P},(_,i)=>Array.from({length:P},(_,j)=>i===j?.5:0));for(const b of rows)for(const v of vectors(b))for(let i=0;i<P;i++)for(let j=0;j<P;j++)A[i][j]+=v[i]*v[j];return A;}
+function inverse(A){const cols=Array.from({length:P},(_,j)=>solve(A.map((row,i)=>[...row,i===j?1:0])));if(cols.some(x=>!x))throw Error('singular information matrix');return cols;}
+function leverage(C,v){return Math.max(0,v.reduce((a,x,i)=>a+x*v.reduce((s,y,j)=>s+C[i][j]*y,0),0));}
+function fixedProbe(t,i){return [.85*Math.sin(2.1*t+i*2),.85*Math.cos(2.7*t+i*2)];}
+function plan(bodies,rows,model,t,policy,rand){
+ const actions=Array.from({length:8},(_,k)=>bodies.map((_,i)=>{const [x,y]=fixedProbe(t,i),a=k*Math.PI/4;return [x*Math.cos(a)-y*Math.sin(a),x*Math.sin(a)+y*Math.cos(a)];}));
+ if(policy==='fixed'||policy==='fixed240')return {action:actions[0],evaluations:0};
+ if(policy==='random')return {action:actions[Math.floor(rand()*actions.length)],evaluations:0};
+ const C=inverse(gram(rows)),h=.5;
+ let best=null;
+ for(let k=0;k<actions.length;k++){
+  const action=actions[k],pred=bodies.map((b,i)=>{const g=goal(t,i),[fx,fy]=force(model,b);let ux=g.ax+2.8*(g.x-b.x)+2.25*(g.vx-b.vx)-fx+action[i][0],uy=g.ay+2.8*(g.y-b.y)+2.25*(g.vy-b.vy)-fy+action[i][1];const s=Math.min(1,6/Math.max(1e-12,norm(ux,uy)));let ax=s*ux+fx,ay=s*uy+fy;
+   return {x:b.x+h*b.vx+.5*h*h*ax,y:b.y+h*b.vy+.5*h*h*ay,vx:b.vx+h*ax,vy:b.vy+h*ay};});
+  let information=pred.reduce((s,b)=>s+vectors(b).reduce((z,v)=>z+Math.log1p(leverage(C,v)),0),0),risk=0;
+  for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){let d=norm(pred[i].x-pred[j].x,pred[i].y-pred[j].y);risk+=Math.max(0,.65-d)**2;}
+  const score=information-(policy==='info_safe'?4*risk:0);
+  if(!best||score>best.score+1e-12)best={action,score,information,risk,evaluations:actions.length};
+ }return best;
+}
+function create(mode='sequential',seed=51,policy='info_safe',noise=.04){if(!modes.includes(mode)||!policies.includes(policy)||!Number.isFinite(noise)||noise<0)throw Error('invalid config');const r=rng(seed^0xa137),actual=makeLaw(mode,seed),probeRand=rng(seed^0x51b);const trainLimit=policy==='fixed240'?240:120;let probeAction=null,planCalls=0,planEvaluations=0,probeEnergy=0,probeSteps=0,actEnergy=0;let first=10,second=39,step=0,phase='monitor',model=nominal,candidate=null,window=[],train=[],val=[],audit=[],events=[],trace=[],repairs=0,attempts=0,rejects=0,collisions=0,excluded=0,totalSamples=0,auditError=null,stopped=false,residual=0,cooldown=0;
+const bodies=Array.from({length:N},(_,i)=>({...goal(0,i),ux:0,uy:0}));const event=(type,t,detail)=>events.push({type,t,detail});
+function inject(){let t=step*dt;if(mode!=='healthy'&&t<first){first=t;return true;}return false;}
+function advance(){if(stopped||step>=T/dt)return snapshot();const t=step*dt,stage=phase,probing=['train','validate','audit'].includes(stage);if(mode!=='healthy'&&(step===Math.round(first/dt)||(mode==='sequential'&&step===Math.round(second/dt))))event('mutation',t,'世界规律改变（演示器事件）');
+const obs=[],contacts=new Set();
+if(stage==='train'&&(!probeAction||step%5===0)){const p=plan(bodies,train,model,t,policy,probeRand);probeAction=p.action;planCalls++;planEvaluations+=p.evaluations;}
+if(probing)probeSteps++;
+for(let i=0;i<N;i++){let b=bodies[i],g=goal(t,i),old={...b},[fx,fy]=force(model,b),[ax,ay]=actual(t,b,first,second);
+const [ex,ey]=stage==='train'&&probeAction?probeAction[i]:probing?fixedProbe(t,i):[0,0];probeEnergy+=dt*(ex*ex+ey*ey);
+let ux=g.ax+2.8*(g.x-b.x)+2.25*(g.vx-b.vx)-fx+ex,uy=g.ay+2.8*(g.y-b.y)+2.25*(g.vy-b.vy)-fy+ey;
+let scale=Math.min(1,6/Math.max(1e-12,norm(ux,uy)));b.ux=ux*scale;b.uy=uy*scale;actEnergy+=dt*(b.ux*b.ux+b.uy*b.uy);b.vx+=dt*(b.ux+ax);b.vy+=dt*(b.uy+ay);b.x+=dt*b.vx;b.y+=dt*b.vy;obs.push({x:old.x,y:old.y,vx:old.vx,vy:old.vy,nx:noise*Math.sqrt(3)*(2*r()-1),ny:noise*Math.sqrt(3)*(2*r()-1)});}
+for(let i=0;i<N;i++)for(let j=i+1;j<N;j++)if(collide(bodies[i],bodies[j])){contacts.add(i);contacts.add(j);collisions++;}
+excluded+=contacts.size;const clean=obs.map((o,i)=>({...o,fx:(bodies[i].vx-o.vx)/dt-bodies[i].ux+o.nx,fy:(bodies[i].vy-o.vy)/dt-bodies[i].uy+o.ny})).filter((_,i)=>!contacts.has(i));if(clean.length){residual=error(model,clean);window.push(residual);if(window.length>12)window.shift();}
+if(cooldown>0)cooldown--;
+if(stage==='monitor'&&cooldown===0&&window.length===12&&rms(window)>.28){event('alarm',t,'共享模型残差超限');if(policy==='frozen')phase='frozen';else if(attempts<3){phase='train';attempts++;probeAction=null;train=[];val=[];audit=[];candidate=null;auditError=null;}}
+else if(probing){const dest=stage==='train'?train:stage==='validate'?val:audit,limit=stage==='train'?trainLimit:120;for(const row of clean){if(dest.length>=limit)break;dest.push(row);totalSamples++;}if(dest.length===limit){if(stage==='train'){phase='validate';event('train',t,trainLimit+' 个无接触样本');}else if(stage==='validate'){candidate=search(train,val);phase='audit';event('candidate',t,'从 8 个共享向量场结构选模');}else{auditError=error(candidate,audit);if(auditError<=.19){model=candidate;repairs++;phase='monitor';cooldown=30;window=[];event('commit',t,'独立审计后更新共享规律');}else{rejects++;phase='rejected';event('reject',t,'审计失败，保留旧模型');}}}}
+if(bodies.some(b=>!Number.isFinite(b.x+b.y+b.vx+b.vy)||norm(b.x,b.y)>7||norm(b.vx,b.vy)>7)){stopped=true;event('stop',t,'越界停机');}
+step++;const nt=step*dt,err=rms(bodies.map((b,i)=>{const g=goal(nt,i);return norm(b.x-g.x,b.y-g.y);}));trace.push({t:nt,error:err,residual,phase,contacts:contacts.size,bodies:bodies.map(b=>[b.x,b.y,b.vx,b.vy,b.ux,b.uy])});return snapshot();}
+function snapshot(){return {mode,seed,policy,t:step*dt,first,second,phase,model,candidate,auditError,repairs,attempts,rejects,collisions,excluded,totalSamples,blockSamples:[train.length,val.length,audit.length],trainLimit,planCalls,planEvaluations,probeEnergy,probeSteps,actEnergy,residual,bodies:bodies.map((b,i)=>({...b,goal:goal(step*dt,i)})),events:events.slice(),stopped,done:stopped||step>=T/dt};}
+return {step:advance,snapshot,inject,trace};}
+function run(mode,seed,policy,noise){let sim=create(mode,seed,policy,noise);while(!sim.snapshot().done)sim.step();let s=sim.snapshot();const tail=sim.trace.filter(p=>p.t>=55),post=sim.trace.filter(p=>p.t>=10),penalty=(rows,start)=>{let expected=Math.round((T-start)/dt)+1;return Math.sqrt((rows.reduce((a,p)=>a+p.error*p.error,0)+Math.max(0,expected-rows.length)*49)/expected);};return {mode,seed,policy,noise,repairs:s.repairs,attempts:s.attempts,rejects:s.rejects,collisions:s.collisions,excluded:s.excluded,samples:s.totalSamples,planCalls:s.planCalls,planEvaluations:s.planEvaluations,probeEnergy:s.probeEnergy,probeSteps:s.probeSteps,actEnergy:s.actEnergy,stopped:s.stopped,late:penalty(tail,55),post:penalty(post,10),commits:s.events.filter(e=>e.type==='commit').map(e=>e.t),alarms:s.events.filter(e=>e.type==='alarm').map(e=>e.t)};}
+function benchmark(n=12){let cases=[];for(const mode of modes)for(const noise of [.04,.08])for(let i=0;i<n;i++)for(const p of policies)cases.push(run(mode,51013+i*7919,p,noise));let report={};for(const p of policies){let a=cases.filter(x=>x.policy===p),changed=a.filter(x=>x.mode!=='healthy'),known=a.filter(x=>['mixed','sequential'].includes(x.mode)),seq=a.filter(x=>x.mode==='sequential'),unknown=a.filter(x=>x.mode==='unknown');report[p]={runs:a.length,late:mean(changed.map(x=>x.late)),post:mean(changed.map(x=>x.post)),knownCases:known.length,knownComplete:known.filter(x=>x.mode==='mixed'?x.commits.some(t=>t>=10):x.commits.some(t=>t>=10&&t<39)&&x.commits.some(t=>t>=39)).length,sequentialBoth:seq.filter(x=>x.commits.some(t=>t>=10&&t<39)&&x.commits.some(t=>t>=39)).length,sequentialCases:seq.length,unknownAccepted:unknown.filter(x=>x.repairs>0).length,unknownCases:unknown.length,stops:a.filter(x=>x.stopped).length,collisions:a.reduce((s,x)=>s+x.collisions,0),excluded:a.reduce((s,x)=>s+x.excluded,0),healthyAlarms:a.filter(x=>x.mode==='healthy'&&x.alarms.length).length,avgSamples:mean(changed.map(x=>x.samples)),avgProbeSeconds:mean(changed.map(x=>x.probeSteps*dt)),avgProbeEnergy:mean(changed.map(x=>x.probeEnergy)),avgActEnergy:mean(changed.map(x=>x.actEnergy)),avgPlanEvaluations:mean(changed.map(x=>x.planEvaluations))};}return {n,report,cases};}
+return {dt,T,N,R,modes,policies,keys,create,run,benchmark,collide,force,plan};}
+const WD51=World51();
+if(typeof module!=='undefined')module.exports=WD51;
