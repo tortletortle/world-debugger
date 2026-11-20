@@ -37,3 +37,7 @@ node research/v45/world-debug-v45-benchmark.cjs
 ## V0.49 连续世界演示
 
 [新版演示入口](demo/v49/index.html)（下载 HTML 后打开，无需安装）。独立连续动力系统、双世界对照、在线识别与审计式控制更新。详见 [实验协议、复现说明与局限](demo/v49/README.md)。V0.45 原网页保持不变。
+
+## V0.50 二维世界实验室
+
+[交互演示](demo/v50/index.html)（下载 HTML 后离线打开）。三个圆盘、接触处理、共享环境力辨识和多次规律变化。完整实验见 [V0.50 协议与结果](demo/v50/README.md)。保留 V0.49 与历史版本。
