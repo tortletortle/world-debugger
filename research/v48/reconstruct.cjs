@@ -25,15 +25,17 @@ function shuffled(a,r){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.fl
 function run(mode,seed,noise=.045){
 if(!modes.includes(mode)||!Number.isFinite(noise)||noise<0)throw Error('bad inputs');
 const w=makeWorld(mode,seed),r=rng(seed),op=Array.from({length:120},()=>({x:2*r()-1,target:.5*r()-.1,z:normal(r)}));
-const rr=rng(seed^0x9f83),points=shuffled(Array.from({length:81},(_,i)=>({x:-1+Math.floor(i/9)/4,u:-1+(i%9)/4,id:i})),rr).slice(0,40).map(p=>{const truth=w.f(p.x,p.u);return {...p,ref:truth+noise*normal(rr),y:truth+w.bias+noise*normal(rr)};});
-const train=points.slice(0,16),val=points.slice(16,24),audit=points.slice(24,40);
+const rr=rng(seed^0x9f83),points=shuffled(Array.from({length:81},(_,i)=>({x:-1+Math.floor(i/9)/4,u:-1+(i%9)/4,id:i})),rr).slice(0,40).map(p=>({...p,z:normal(rr),zref:normal(rr)}));
 const alarmWindow=[];let alarm=null;for(let t=0;t<op.length;t++){const x=op[t].x,u=control(nominal,x,op[t].target);const y=t>=w.change?w.f(x,u)+w.bias:predict(nominal,x,u);alarmWindow.push(y+noise*op[t].z-predict(nominal,x,u));if(alarmWindow.length>6)alarmWindow.shift();if(alarmWindow.length===6&&rms(alarmWindow)>.15){alarm=t;break;}}
-const out={mode,seed,noise,change:w.change,alarm,methods:{}};
+const eligible=alarm!==null&&alarm+40<op.length;
+const observations=eligible?points.map((p,i)=>{const changed=alarm+i>=w.change,truth=changed?w.f(p.x,p.u):predict(nominal,p.x,p.u);return {...p,ref:truth+noise*p.zref,y:truth+(changed?w.bias:0)+noise*p.z};}):[];
+const train=observations.slice(0,16),val=observations.slice(16,24),audit=observations.slice(24,40);
+const out={mode,seed,noise,change:w.change,alarm,probeIds:observations.map(p=>p.id),methods:{}};
 for(const method of methods){let model=nominal,selected=null,auditError=null,biasError=null,accepted=false,fits=0;
-if(method!=='frozen'&&alarm!==null&&alarm>=w.change&&alarm+40<op.length){const p=search(train,val,method==='reconstruct_unguarded'?'reconstruct':method);fits=p.fits;selected=p.best;auditError=error(selected,audit);biasError=rms(audit.map(s=>s.y-s.ref-selected.bias));accepted=method==='reconstruct_unguarded'||(auditError<=Math.max(.13,2*noise)&&biasError<=Math.max(.14,2.5*noise));if(accepted)model=selected;}
-const eligible=alarm!==null&&alarm>=w.change&&alarm+40<op.length, start=eligible?alarm+40:w.change+40;
+if(method!=='frozen'&&eligible){const p=search(train,val,method==='reconstruct_unguarded'?'reconstruct':method);fits=p.fits;selected=p.best;auditError=error(selected,audit);biasError=rms(audit.map(s=>s.y-s.ref-selected.bias));accepted=method==='reconstruct_unguarded'||(auditError<=Math.max(.13,2*noise)&&biasError<=Math.max(.14,2.5*noise));if(accepted)model=selected;}
+const start=eligible?Math.max(alarm+40,w.change+40):w.change+40;
 const tail=op.slice(Math.min(op.length-1,start)).map(v=>{const u=control(model,v.x,v.target);return w.f(v.x,u)-v.target;});
-const independent=Array.from({length:121},(_,i)=>{const x=-.95+Math.floor(i/11)*.19,u=-.95+(i%11)*.19;return predict(model,x,u)-w.f(x,u);});
+const independent=Array.from({length:121},(_,i)=>{const x=-.97+Math.floor(i/11)*.193,u=-.97+(i%11)*.193;return predict(model,x,u)-w.f(x,u);});
 out.methods[method]={accepted,fits,queries:fits?40:0,auditError,biasError,terms:model.terms,selectedTerms:selected?.terms??null,beta:model.beta,bias:model.bias,tracking:rms(tail),modelError:rms(independent),excursions:tail.filter(e=>Math.abs(e)>.35).length,steps:tail.length};}
 return out;
 }
