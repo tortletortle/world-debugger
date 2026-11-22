@@ -8,7 +8,7 @@ Open `index.html` directly in a modern browser. It remains an offline, dependenc
 
 V0.55 fixes a stale-authorization defect in the V0.54 runtime. When a residual alarm is raised while a learned model is active, V0.55 immediately revokes that authorization, clears the approved regions, and uses the nominal model for subsequent control. Training, validation, and audit continue without the old learned model being applied. Only a successful audit creates a new authorization epoch. Failed audits and retry exhaustion remain fail-closed.
 
-The UI now displays authorization status, epoch, cumulative revocations, and the most recent revocation time/reason. The event log records the revoke transition.
+The UI now displays authorization status, epoch, cumulative revocations, and the most recent revocation time/reason. During re-identification it explicitly displays the nominal fallback controller rather than the inactive learned model. The event log records the revoke transition. Export metadata and filenames identify V0.55.
 
 ## Reproduce
 

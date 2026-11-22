@@ -15,9 +15,13 @@ on:
       - '.github/workflows/world-debugger-v55.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   regression:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -41,7 +41,7 @@ Tracking RMS is descriptive only. The small deterministic synthetic grid is not 
 node demo/v55/regression.test.cjs
 ```
 
-The suite covers deterministic replay, split isolation, per-step scope authorization, synchronous revocation, no learned-model use during re-identification, fail-closed second-audit rejection, initial audit rejection, and the mocked UI. GitHub Actions is configured to run it under Node.js 22 on the pull request.
+The suite covers deterministic replay, split isolation, per-step scope authorization, synchronous revocation, no learned-model use during re-identification, fail-closed second-audit rejection, initial audit rejection, and the mocked UI. GitHub Actions is configured to run it under Node.js 22 on the pull request. The first three hosted-runner attempts terminated before any job step was recorded; the jobs expose no step logs, so this is not evidence of a test assertion failure. The workflow is pinned to Ubuntu 22.04 for the next attempt; native CI remains pending.
 
 ## Remaining limitations
 

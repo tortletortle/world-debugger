@@ -34,7 +34,7 @@ Node.js 22，无 npm 依赖：
 node demo/v55/regression.test.cjs
 ```
 
-GitHub Actions 会在 V0.55 分支及相关 PR 上运行回归测试。
+已添加 Node.js 22 GitHub Actions 回归工作流；当前托管 Runner 启动失败，原生 CI 尚未验收。
 
 ## 研究边界
 
