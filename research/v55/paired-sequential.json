@@ -1,0 +1,585 @@
+{
+  "baseline": {
+    "version": "V0.54",
+    "sourceSha": "53edbbcc206e8af4ee28f02d65d503c44c004f84"
+  },
+  "candidate": {
+    "version": "V0.55",
+    "change": "residual-drift authorization revocation"
+  },
+  "design": {
+    "scenario": "sequential",
+    "policy": "tree_guard",
+    "seeds": [
+      92381,
+      54711,
+      10001,
+      20261123,
+      314159,
+      8675309
+    ],
+    "noise": [
+      0.06,
+      0.12
+    ],
+    "dropout": [
+      0.35,
+      0.65
+    ],
+    "budget": 30,
+    "dt": 0.05,
+    "horizon": 72,
+    "staleFrameDefinition": "Count usage.learned=true after the second alarm/revocation detection frame and before the next successful commit frame; if no later commit, count to end."
+  },
+  "summary": {
+    "pairedRuns": 24,
+    "secondAlarmRuns": 21,
+    "secondRevocationRuns": 21,
+    "v54": {
+      "staleLearnedFramesTotal": 23413,
+      "staleLearnedFramesMeanWhenAlarmed": 1114.904761904762,
+      "staleLearnedFramesMax": 1637,
+      "postRmsMean": 0.8525508483352161,
+      "lateRmsMean": 0.8857744130168408
+    },
+    "v55": {
+      "staleLearnedFramesTotal": 0,
+      "staleLearnedFramesMeanWhenRevoked": 0,
+      "postRmsMean": 0.8318145717891957,
+      "lateRmsMean": 0.827552867001004,
+      "reauthorizedAfterSecondChange": 12,
+      "activeAtEnd": 7,
+      "revocationCountTotal": 28
+    }
+  },
+  "cases": [
+    {
+      "seed": 92381,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 40.800000000000004,
+        "secondCommit": 58.300000000000004,
+        "staleLearnedFrames": 932,
+        "postRms": 0.7328792112338234,
+        "lateRms": 1.021417121779749
+      },
+      "v55": {
+        "secondRevoke": 40.800000000000004,
+        "secondCommit": 58.300000000000004,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 2,
+        "authorizationActive": true,
+        "postRms": 0.7048015076360472,
+        "lateRms": 0.947797394462835
+      }
+    },
+    {
+      "seed": 92381,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "postRms": 0.736976467427123,
+        "lateRms": 0.07061781208766554
+      },
+      "v55": {
+        "secondRevoke": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "revocations": 0,
+        "authorizationEpoch": 1,
+        "authorizationActive": true,
+        "postRms": 0.736976467427123,
+        "lateRms": 0.07061781208766554
+      }
+    },
+    {
+      "seed": 92381,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 40.7,
+        "secondCommit": 58.2,
+        "staleLearnedFrames": 977,
+        "postRms": 0.7074880680524229,
+        "lateRms": 1.03202280615277
+      },
+      "v55": {
+        "secondRevoke": 40.7,
+        "secondCommit": 58.2,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.6794686080542213,
+        "lateRms": 0.9638666311771488
+      }
+    },
+    {
+      "seed": 92381,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 43.1,
+        "secondCommit": null,
+        "staleLearnedFrames": 1568,
+        "postRms": 1.0245322454165793,
+        "lateRms": 1.2388415005580955
+      },
+      "v55": {
+        "secondRevoke": 43.1,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 0.999633168114583,
+        "lateRms": 1.162018896887851
+      }
+    },
+    {
+      "seed": 54711,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 49.2,
+        "secondCommit": 66.2,
+        "staleLearnedFrames": 798,
+        "postRms": 0.6967538620828021,
+        "lateRms": 1.042172985240696
+      },
+      "v55": {
+        "secondRevoke": 49.2,
+        "secondCommit": 66.2,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.6668578281346856,
+        "lateRms": 0.9700579675712748
+      }
+    },
+    {
+      "seed": 54711,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 42.400000000000006,
+        "secondCommit": null,
+        "staleLearnedFrames": 1625,
+        "postRms": 1.0340499413886362,
+        "lateRms": 1.0517009771507162
+      },
+      "v55": {
+        "secondRevoke": 42.400000000000006,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 1.0136648532046735,
+        "lateRms": 0.9792528373139017
+      }
+    },
+    {
+      "seed": 54711,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 41,
+        "secondCommit": 57.2,
+        "staleLearnedFrames": 780,
+        "postRms": 0.7370289124871464,
+        "lateRms": 1.0580088728781463
+      },
+      "v55": {
+        "secondRevoke": 41,
+        "secondCommit": 57.2,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.6983979212789476,
+        "lateRms": 0.9779583739109111
+      }
+    },
+    {
+      "seed": 54711,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 42.900000000000006,
+        "secondCommit": null,
+        "staleLearnedFrames": 1637,
+        "postRms": 1.0298782194524632,
+        "lateRms": 1.0363144625458809
+      },
+      "v55": {
+        "secondRevoke": 42.900000000000006,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 1.0076493556707293,
+        "lateRms": 0.958447254803779
+      }
+    },
+    {
+      "seed": 10001,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 50.7,
+        "secondCommit": 68.5,
+        "staleLearnedFrames": 920,
+        "postRms": 0.6616451443803354,
+        "lateRms": 0.9521124173193586
+      },
+      "v55": {
+        "secondRevoke": 50.7,
+        "secondCommit": 68.5,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.6303456427339436,
+        "lateRms": 0.8719279509310647
+      }
+    },
+    {
+      "seed": 10001,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "postRms": 0.8872859000226515,
+        "lateRms": 0.08355595035958625
+      },
+      "v55": {
+        "secondRevoke": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "revocations": 0,
+        "authorizationEpoch": 1,
+        "authorizationActive": true,
+        "postRms": 0.8872859000226515,
+        "lateRms": 0.08355595035958625
+      }
+    },
+    {
+      "seed": 10001,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 41.7,
+        "secondCommit": 60.2,
+        "staleLearnedFrames": 1009,
+        "postRms": 0.7904627056112536,
+        "lateRms": 1.2561596932750136
+      },
+      "v55": {
+        "secondRevoke": 41.7,
+        "secondCommit": 60.2,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 2,
+        "authorizationActive": true,
+        "postRms": 0.7456564353482501,
+        "lateRms": 1.1527009525925926
+      }
+    },
+    {
+      "seed": 10001,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 60.2,
+        "secondCommit": null,
+        "staleLearnedFrames": 391,
+        "postRms": 0.8957481089528009,
+        "lateRms": 0.1640458410831974
+      },
+      "v55": {
+        "secondRevoke": 60.2,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 0.8957489086290855,
+        "lateRms": 0.16406173135972804
+      }
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 42,
+        "secondCommit": 58.300000000000004,
+        "staleLearnedFrames": 779,
+        "postRms": 0.8120180033419628,
+        "lateRms": 1.094231459099829
+      },
+      "v55": {
+        "secondRevoke": 42,
+        "secondCommit": 58.300000000000004,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 2,
+        "authorizationActive": true,
+        "postRms": 0.7778782996108714,
+        "lateRms": 1.0039563536925709
+      }
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 40.800000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 1607,
+        "postRms": 1.101080875672806,
+        "lateRms": 1.4454841701460346
+      },
+      "v55": {
+        "secondRevoke": 40.800000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 1.0709020881116151,
+        "lateRms": 1.3606810040230752
+      }
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 40.6,
+        "secondCommit": 57.400000000000006,
+        "staleLearnedFrames": 803,
+        "postRms": 0.8128355732395314,
+        "lateRms": 1.0536065313620657
+      },
+      "v55": {
+        "secondRevoke": 40.6,
+        "secondCommit": 57.400000000000006,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.7864571239600682,
+        "lateRms": 0.9868149672096798
+      }
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 40.800000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 1627,
+        "postRms": 1.1003105053181124,
+        "lateRms": 1.443157917799922
+      },
+      "v55": {
+        "secondRevoke": 40.800000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 1.070971997133731,
+        "lateRms": 1.3606810040406712
+      }
+    },
+    {
+      "seed": 314159,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 42.900000000000006,
+        "secondCommit": 59.7,
+        "staleLearnedFrames": 875,
+        "postRms": 0.6928472540406683,
+        "lateRms": 0.9298977140249156
+      },
+      "v55": {
+        "secondRevoke": 42.900000000000006,
+        "secondCommit": 59.7,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.679573774133313,
+        "lateRms": 0.8791943179446403
+      }
+    },
+    {
+      "seed": 314159,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "postRms": 0.896522458850708,
+        "lateRms": 0.29107489260410985
+      },
+      "v55": {
+        "secondRevoke": null,
+        "secondCommit": null,
+        "staleLearnedFrames": null,
+        "revocations": 0,
+        "authorizationEpoch": 0,
+        "authorizationActive": false,
+        "postRms": 0.896522458850708,
+        "lateRms": 0.29107489260410985
+      }
+    },
+    {
+      "seed": 314159,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 39.5,
+        "secondCommit": 56.800000000000004,
+        "staleLearnedFrames": 973,
+        "postRms": 0.6781458540349263,
+        "lateRms": 0.8339800497472466
+      },
+      "v55": {
+        "secondRevoke": 39.5,
+        "secondCommit": 56.800000000000004,
+        "staleLearnedFrames": 0,
+        "revocations": 2,
+        "authorizationEpoch": 2,
+        "authorizationActive": false,
+        "postRms": 0.6705825110248769,
+        "lateRms": 0.7998348435505837
+      }
+    },
+    {
+      "seed": 314159,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 44.300000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 1571,
+        "postRms": 0.9125574845875994,
+        "lateRms": 0.501279783655631
+      },
+      "v55": {
+        "secondRevoke": 44.300000000000004,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 0.9159728710156179,
+        "lateRms": 0.519618179537433
+      }
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.06,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 49.6,
+        "secondCommit": 67.60000000000001,
+        "staleLearnedFrames": 832,
+        "postRms": 0.8167903123385442,
+        "lateRms": 1.0882548362675977
+      },
+      "v55": {
+        "secondRevoke": 49.6,
+        "secondCommit": 67.60000000000001,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 2,
+        "authorizationActive": true,
+        "postRms": 0.787039834097394,
+        "lateRms": 1.0070285103398224
+      }
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.06,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 43.7,
+        "secondCommit": null,
+        "staleLearnedFrames": 1428,
+        "postRms": 0.9558976678533314,
+        "lateRms": 0.7755969737193077
+      },
+      "v55": {
+        "secondRevoke": 43.7,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 0.9377677514786635,
+        "lateRms": 0.702265418217492
+      }
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.12,
+      "drop": 0.35,
+      "v54": {
+        "secondAlarm": 48.400000000000006,
+        "secondCommit": 66,
+        "staleLearnedFrames": 840,
+        "postRms": 0.7926353411210825,
+        "lateRms": 1.0230814677229678
+      },
+      "v55": {
+        "secondRevoke": 48.400000000000006,
+        "secondCommit": 66,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 2,
+        "authorizationActive": true,
+        "postRms": 0.765537656683325,
+        "lateRms": 0.9456522453671417
+      }
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.12,
+      "drop": 0.65,
+      "v54": {
+        "secondAlarm": 43.7,
+        "secondCommit": null,
+        "staleLearnedFrames": 1441,
+        "postRms": 0.954850243137872,
+        "lateRms": 0.771969675823676
+      },
+      "v55": {
+        "secondRevoke": 43.7,
+        "secondCommit": null,
+        "staleLearnedFrames": 0,
+        "revocations": 1,
+        "authorizationEpoch": 1,
+        "authorizationActive": false,
+        "postRms": 0.9378567605855758,
+        "lateRms": 0.7022033180385381
+      }
+    }
+  ]
+}
