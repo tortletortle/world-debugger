@@ -1,0 +1,31 @@
+name: World Debugger V0.55 regression
+
+on:
+  pull_request:
+    paths:
+      - 'demo/v55/**'
+      - 'research/v55/**'
+      - '.github/workflows/world-debugger-v55.yml'
+  push:
+    branches:
+      - 'feature/v0.55-revocable-model-authorization'
+    paths:
+      - 'demo/v55/**'
+      - 'research/v55/**'
+      - '.github/workflows/world-debugger-v55.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run deterministic regression suite
+        run: node demo/v55/regression.test.cjs
