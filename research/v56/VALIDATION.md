@@ -46,4 +46,4 @@ The suite passes 73,164 sandbox assertions. It covers all V0.55 assertions, 200 
 - Squared-residual CUSUM is an engineering heuristic; reference value 2 and threshold 24 are not statistically calibrated.
 - Comparing unsupported observations with the nominal model can flag a known law that is simply outside the learned model's authorized support. This means “unexplained under current authorization,” not necessarily “newly changed.”
 - A shadow alarm is a candidate signal, not causal proof. It does not trigger active probing or local model fitting in V0.56.
-- Evidence is synthetic. Native Node.js 22 GitHub Actions and real browser rendering remain pending; the previous V0.55 hosted-runner jobs terminated before step logs were available.
+- Evidence is synthetic. Native Node.js 22 GitHub Actions and real browser rendering remain pending. V0.56 push run #45114278936, PR run #45114283647, and the PR run's second attempt all terminated before any job step was recorded; the jobs expose no step summaries or logs. This does not establish a source-level test failure, but it also does not constitute native CI validation.

@@ -33,7 +33,7 @@ Node.js 22，无 npm 依赖：
 node demo/v56/regression.test.cjs
 ```
 
-V0.56 独立 GitHub Actions 工作流运行回归测试；托管 Runner 的原生 CI 结果仍需核验。
+V0.56 已配置独立 GitHub Actions 工作流；当前 push/PR 运行均在任何 job step 记录前失败，原生 Node.js CI 尚未验收。
 
 ## 研究边界
 证据来自合成三圆盘动力学。能量 CUSUM 参数未校准，x 符号二分区较粗，未验证真实物理环境。影子报警不等于因果证明或模型授权；覆盖包络不是置信区间，也不提供安全保证。
