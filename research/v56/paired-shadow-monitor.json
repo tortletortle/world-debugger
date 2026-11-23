@@ -1,0 +1,634 @@
+{
+  "baseline": {
+    "version": "V0.55",
+    "head": "e25c15e0d4c0eebef434789031515dfebad7a45b"
+  },
+  "candidate": {
+    "version": "V0.56",
+    "commit": "ca2d2ea24ee1bc70680793ff28b9d9d05f5683af"
+  },
+  "design": {
+    "scenario": "hidden",
+    "policy": "tree_guard",
+    "budget": 30,
+    "horizon": 72,
+    "dt": 0.05,
+    "seeds": [
+      92381,
+      54711,
+      10001,
+      20261123,
+      314159,
+      8675309
+    ],
+    "noise": [
+      0.06,
+      0.12
+    ],
+    "dropout": [
+      0.35,
+      0.65
+    ],
+    "regionPartition": "x<0 versus x>=0",
+    "statistic": "S=max(0,S+min(100,(e/max(noise,0.02))^2)-2); alarm at S>=24 after >=3 samples"
+  },
+  "nullCalibration": {
+    "seededStreams": 200,
+    "samplesPerStream": 2000,
+    "noiseAlternated": [
+      0.06,
+      0.12
+    ],
+    "falseAlarmStreams": 0
+  },
+  "summary": {
+    "pairedRuns": 24,
+    "baselineAuthorizedRuns": 23,
+    "shadowDetectedRuns": 20,
+    "detectionRateAmongAuthorized": 0.8695652173913043,
+    "totalShadowAlarms": 28,
+    "totalShadowObservations": 349,
+    "meanShadowObservations": 14.541666666666666,
+    "meanFirstAlarmTime": 41.43999999999998,
+    "allBodyTracesIdentical": true,
+    "allUsageTracesIdentical": true
+  },
+  "cases": [
+    {
+      "seed": 92381,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 9
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 9,
+        "shadowAlarms": 1,
+        "regions": [
+          "x<0"
+        ],
+        "alarmTimes": [
+          45.900000000000006
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 92381,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 13
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 13,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          42.400000000000006,
+          54.2
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 92381,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 10
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 10,
+        "shadowAlarms": 1,
+        "regions": [
+          "x<0"
+        ],
+        "alarmTimes": [
+          67.9
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 92381,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 17
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 17,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          42.2,
+          43.1
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 54711,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 40
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 40,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          32.7,
+          35.300000000000004
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 54711,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 6
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 6,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          41
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 54711,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 41
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 41,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          32.7,
+          35.300000000000004
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 54711,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 6
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 6,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          41
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 10001,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 3
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 3,
+        "shadowAlarms": 1,
+        "regions": [
+          "x<0"
+        ],
+        "alarmTimes": [
+          34.9
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 10001,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 6
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 6,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          54.2
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 10001,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 4
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 4,
+        "shadowAlarms": 0,
+        "regions": [],
+        "alarmTimes": []
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 10001,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 4
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 4,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          54.2
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 36
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 36,
+        "shadowAlarms": 2,
+        "regions": [
+          "x≥0",
+          "x<0"
+        ],
+        "alarmTimes": [
+          27.5,
+          31.1
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 6
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 6,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          39.900000000000006
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 2,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 117
+      },
+      "candidate": {
+        "repairs": 2,
+        "authorizationActive": true,
+        "shadowObservations": 7,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          46.400000000000006
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 20261123,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 6
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 6,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          39.900000000000006
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 314159,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 66
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 66,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          28.900000000000002,
+          31.8
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 314159,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 8
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 8,
+        "shadowAlarms": 1,
+        "regions": [
+          "x<0"
+        ],
+        "alarmTimes": [
+          43.400000000000006
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 314159,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 3
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 3,
+        "shadowAlarms": 0,
+        "regions": [],
+        "alarmTimes": []
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 314159,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 3
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 3,
+        "shadowAlarms": 1,
+        "regions": [
+          "x≥0"
+        ],
+        "alarmTimes": [
+          42.800000000000004
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.06,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 28
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 28,
+        "shadowAlarms": 2,
+        "regions": [
+          "x≥0",
+          "x<0"
+        ],
+        "alarmTimes": [
+          28,
+          34.4
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.06,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "scopeMonitorSkipped": 25
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": true,
+        "shadowObservations": 25,
+        "shadowAlarms": 2,
+        "regions": [
+          "x<0",
+          "x≥0"
+        ],
+        "alarmTimes": [
+          42.900000000000006,
+          43.6
+        ]
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.12,
+      "drop": 0.35,
+      "baseline": {
+        "repairs": 0,
+        "authorizationActive": false,
+        "scopeMonitorSkipped": 0
+      },
+      "candidate": {
+        "repairs": 0,
+        "authorizationActive": false,
+        "shadowObservations": 0,
+        "shadowAlarms": 0,
+        "regions": [],
+        "alarmTimes": []
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    },
+    {
+      "seed": 8675309,
+      "noise": 0.12,
+      "drop": 0.65,
+      "baseline": {
+        "repairs": 1,
+        "authorizationActive": false,
+        "scopeMonitorSkipped": 93
+      },
+      "candidate": {
+        "repairs": 1,
+        "authorizationActive": false,
+        "shadowObservations": 2,
+        "shadowAlarms": 0,
+        "regions": [],
+        "alarmTimes": []
+      },
+      "identicalBodyTrace": true,
+      "identicalUsageTrace": true
+    }
+  ]
+}
