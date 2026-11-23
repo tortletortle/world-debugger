@@ -1,10 +1,10 @@
 # 世界调试器
 
 - 仓库：https://github.com/tortletortle/world-debugger （Private）
-- 路径：`01_Projects/world-debugger`
-- 当前候选：V0.55（可撤销模型授权）
-- 开发分支：`feature/v0.55-revocable-model-authorization`
-- 基线：V0.54，保持不变
-- 当前交付：独立演示、回归测试、配对实验数据、Node.js 22 CI 工作流（Runner 启动待排查）
-- 下一步：校准漂移检测阈值；设计授权区域外 shadow monitor；再研究区域局部模型注册表
-- 约束：不直接修改 main，不自动合并；未完成真实浏览器/外部基准验收的内容不得标记为已完成
+- 当前候选：V0.56（授权范围外只读影子监测）
+- 开发分支：`feature/v0.56-shadow-monitor`
+- 基线：V0.55 候选分支 `feature/v0.55-revocable-model-authorization`
+- V0.55 PR #1：保持 Draft，未合并；原生 Actions Runner 失败状态未解决
+- V0.56 交付：影子监测、能量 CUSUM、UI 状态、73,164 项沙箱断言、200 条空模型噪声流、24 组配对实验
+- 下一步：更细粒度区域发现；研究主动探测与局部知识更新
+- 约束：V0.56 PR 以 V0.55 分支为 base，不合并 main；未完成原生 CI 与真实浏览器验收不得标记为正式发布
