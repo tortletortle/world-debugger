@@ -1,0 +1,31 @@
+name: World Debugger V0.56 shadow monitor
+
+on:
+  pull_request:
+    paths:
+      - 'demo/v56/**'
+      - 'research/v56/**'
+      - '.github/workflows/world-debugger-v56.yml'
+  push:
+    branches:
+      - 'feature/v0.56-shadow-monitor'
+    paths:
+      - 'demo/v56/**'
+      - 'research/v56/**'
+      - '.github/workflows/world-debugger-v56.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run deterministic shadow-monitor regression
+        run: node demo/v56/regression.test.cjs
